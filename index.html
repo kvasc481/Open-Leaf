@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Leaf Library</title>
+<style>
+:root {
+  --primary: #FFEDAB;
+  --secondary: #F0E6DA;
+  --accent: #75070C;
+  --accent2: #4F6815;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: var(--secondary);
+  color: #333;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* BUBBLES */
+#bubble-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(117, 7, 12, 0.2);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: bubbleMove linear infinite;
+}
+@keyframes bubbleMove {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-110vh) scale(1.2); }
+}
+
+/* PAGES */
+#home, #books, #trending {
+  position: relative;
+  z-index: 1;
+}
+
+#home {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ANIMATED LOGO: STACK OF BOOKS */
+#logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.book-stack {
+  position: absolute;
+  width: 60px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 3px;
+  left: 10px;
+  animation: stackBounce 2s infinite alternate;
+}
+.book-stack:nth-child(2) { bottom: 15px; animation-delay: 0.2s; background: #8B0000; }
+.book-stack:nth-child(3) { bottom: 30px; animation-delay: 0.4s; background: #4F6815; }
+.book-stack:nth-child(4) { bottom: 45px; animation-delay: 0.6s; background: #FF7F50; }
+@keyframes stackBounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+h2 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 12px 28px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 5px;
+}
+.btn:hover { opacity: 0.9; }
+
+#books, #trending {
+  display: none;
+  padding: 100px 40px 40px;
+  min-height: 100vh;
+}
+
+#searchBar, #searchBarTrending {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  font-size: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.book {
+  background: var(--primary);
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.book img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.book-title {
+  margin-top: 8px;
+  font-weight: bold;
+  color: var(--accent);
+  font-size: 0.95rem;
+}
+.book-author {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 2px;
+}
+.book:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.backBtn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.backBtn:hover { opacity: 0.9; }
+
+.contact {
+  text-align: center;
+  margin-top: 50px;
+  color: #555;
+  font-size: 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<div id="bubble-container"></div>
+
+<!-- HOME PAGE -->
+<div id="home">
+  <div id="logo">
+    <div class="book-stack"></div>
+    <div class="book-stack"></div>
+    <div class="book-stack"></div>
+    <div class="book-stack"></div>
+  </div>
+  <h2>OPEN LEAF LIBRARY</h2>
+  <p>Free • Digital • Ad‑Free • Free for all students</p>
+  <button class="btn" onclick="openBooks()">Browse Books</button>
+  <button class="btn" onclick="openTrending()">Trending Books</button>
+</div>
+
+<!-- BROWSE BOOKS PAGE -->
+<div id="books">
+  <button class="backBtn" onclick="backHome()">⬅ Back</button>
+  <input type="text" id="searchBar" placeholder="Search books..." onkeyup="filterBooks('books')">
+  <div class="grid" id="bookGrid">
+    <!-- Real books with covers -->
+  </div>
+  <div class="contact">Contact: <b>kvascbgr@gmail.com</b> • GitHub • Bangalore – 560047</div>
+</div>
+
+<!-- TRENDING PAGE -->
+<div id="trending">
+  <button class="backBtn" onclick="backHome()">⬅ Back</button>
+  <h2 style="text-align:center; color:var(--accent);">📚 Trending Now</h2>
+  <input type="text" id="searchBarTrending" placeholder="Search trending books..." onkeyup="filterBooks('trending')">
+  <div class="grid" id="trendingGrid">
+    <!-- JS will add 25 trending books -->
+  </div>
+  <div class="contact">Contact: <b>kvascbgr@gmail.com</b> • GitHub • Bangalore – 560047</div>
+</div>
+
+<script>
+window.onload = function() {
+  // Bubbles
+  const bubbleContainer = document.getElementById('bubble-container');
+  for (let i = 0; i < 40; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const size = Math.random() * 30 + 15;
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+    bubble.style.left = `${Math.random() * 100}%`;
+    bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+    bubble.style.animationDelay = `${Math.random() * 5}s`;
+    bubbleContainer.appendChild(bubble);
+  }
+
+  // Pages functions
+  window.openBooks = function() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("books").style.display = "block";
+    document.getElementById("trending").style.display = "none";
+  }
+  window.openTrending = function() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("books").style.display = "none";
+    document.getElementById("trending").style.display = "block";
+  }
+  window.backHome = function() {
+    document.getElementById("trending").style.display = "none";
+    document.getElementById("books").style.display = "none";
+    document.getElementById("home").style.display = "flex";
+  }
+
+  window.filterBooks = function(source) {
+    const input = (source === 'books'
+      ? document.getElementById("searchBar").value
+      : document.getElementById("searchBarTrending").value
+    ).toLowerCase();
+    const grid = (source === 'books')
+      ? document.querySelectorAll("#bookGrid .book")
+      : document.querySelectorAll("#trendingGrid .book");
+    grid.forEach(book => {
+      book.style.display = book.innerText.toLowerCase().includes(input) ? "block" : "none";
+    });
+  }
+
+  window.openBuy = function(bookName) {
+    window.open("https://www.google.com/search?q=" + encodeURIComponent(bookName), "_blank");
+  }
+
+  // Add Browse Books
+  const browseBooks = [
+    {title:"Atomic Habits",author:"James Clear",isbn:"9780735211292"},
+    {title:"The Subtle Art of Not Giving a F*ck",author:"Mark Manson",isbn:"9780062457714"},
+    {title:"Deep Work",author:"Cal Newport",isbn:"9781455586691"},
+    {title:"Educated",author:"Tara Westover",isbn:"9780399590504"},
+    {title:"Thinking, Fast and Slow",author:"Daniel Kahneman",isbn:"9780374533557"}
+  ];
+  const bookGrid = document.getElementById('bookGrid');
+  browseBooks.forEach(book=>{
+    const div = document.createElement('div');
+    div.className = 'book';
+    div.onclick = ()=>openBuy(book.title);
+    div.innerHTML = `
+      <img src="https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg" alt="${book.title}">
+      <div class="book-title">${book.title}</div>
+      <div class="book-author">${book.author}</div>
+    `;
+    bookGrid.appendChild(div);
+  });
+
+  // Add 25 trending books dynamically
+  const trendingBooks = [
+    {title:"Sam Manekshaw",author:"S. Manekshaw",isbn:"9780143068558"},
+    {title:"CDS & Bipin Rawat",author:"Bipin Rawat",isbn:"9789390397178"},
+    {title:"The Hobbit",author:"J.R.R. Tolkien",isbn:"9780547928227"},
+    {title:"To Kill a Mockingbird",author:"Harper Lee",isbn:"9780061120084"},
+    {title:"The Great Gatsby",author:"F. Scott Fitzgerald",isbn:"9780743273565"},
+    {title:"Sapiens",author:"Yuval Noah Harari",isbn:"9780062316097"},
+    {title:"1984",author:"George Orwell",isbn:"9780451524935"},
+    {title:"Pride and Prejudice",author:"Jane Austen",isbn:"9780141040349"},
+    {title:"Homo Deus",author:"Yuval Noah Harari",isbn:"9780062464316"},
+    {title:"Elon Musk",author:"Ashlee Vance",isbn:"9781529105109"},
+    {title:"The Catcher in the Rye",author:"J.D. Salinger",isbn:"9780316769488"},
+    {title:"Brave New World",author:"Aldous Huxley",isbn:"9780060850524"},
+    {title:"Astrophysics for People in a Hurry",author:"Neil deGrasse Tyson",isbn:"9780393609394"},
+    {title:"The Alchemist",author:"Paulo Coelho",isbn:"9780061122415"},
+    {title:"Harry Potter 1",author:"J.K. Rowling",isbn:"9780590353427"},
+    {title:"The Body",author:"Bill Bryson",isbn:"9780385539302"},
+    {title:"Steve Jobs",author:"Walter Isaacson",isbn:"9781451648539"},
+    {title:"The Lord of the Rings",author:"J.R.R. Tolkien",isbn:"9780544003415"},
+    {title:"The Chronicles of Narnia",author:"C.S. Lewis",isbn:"9780064471190"},
+    {title:"The Kite Runner",author:"Khaled Hosseini",isbn:"9781594631931"},
+    {title:"A Brief History of Time",author:"Stephen Hawking",isbn:"9780553380163"},
+    {title:"The Da Vinci Code",author:"Dan Brown",isbn:"9780307474278"},
+    {title:"Angels & Demons",author:"Dan Brown",isbn:"9780743493468"},
+    {title:"The Silent Patient",author:"Alex Michaelides",isbn:"9781250301697"},
+    {title:"Thinking, Fast and Slow",author:"Daniel Kahneman",isbn:"9780374533557"}
+  ];
+  const trendingGrid = document.getElementById('trendingGrid');
+  trendingBooks.forEach(book=>{
+    const div = document.createElement('div');
+    div.className = 'book';
+    div.onclick = ()=>openBuy(book.title);
+    div.innerHTML = `
+      <img src="https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg" alt="${book.title}">
+      <div class="book-title">${book.title}</div>
+      <div class="book-author">${book.author}</div>
+    `;
+    trendingGrid.appendChild(div);
+  });
+
+};
+</script>
+</body>
+</html>
